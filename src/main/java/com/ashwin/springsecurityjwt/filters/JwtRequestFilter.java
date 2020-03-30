@@ -30,6 +30,9 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 	
 	@Autowired
 	private JwtUtil jwtUtil;
+	
+	private static final String AUTHORIZATION = "Authorization";
+	private static final String BEARER = "Bearer ";
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -37,12 +40,12 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 		// TODO Auto-generated method stub
 		
 		logger.info("Into Filtering");
-		final String authorizationHeader = request.getHeader("Authorization");
+		final String authorizationHeader = request.getHeader(AUTHORIZATION);
 		
 		String username = null;
 		String jwt = null;
 		
-		if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+		if(authorizationHeader != null && authorizationHeader.startsWith(BEARER)) {
 			logger.info("Into Authorizing");
 			jwt = authorizationHeader.substring(7);
 			logger.info("JWT TOKEN: " + jwt);

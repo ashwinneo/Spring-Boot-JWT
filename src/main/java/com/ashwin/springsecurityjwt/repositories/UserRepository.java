@@ -10,5 +10,6 @@ import com.ashwin.springsecurityjwt.models.User;
 public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	Optional<User> findByUserName(String userName);
+	
 
 }

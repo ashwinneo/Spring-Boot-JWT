@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ashwin.springsecurityjwt.filters.JwtRequestFilter;
+import com.ashwin.springsecurityjwt.models.User;
 import com.ashwin.springsecurityjwt.request.AuthenticationRequest;
 import com.ashwin.springsecurityjwt.response.AuthenticationResponse;
 import com.ashwin.springsecurityjwt.services.MyUserDetailService;
@@ -56,5 +57,12 @@ public class HomeController {
 		final String jwt = jwtUtil.generateToken(userDetails);
 		
 		return ResponseEntity.ok(new AuthenticationResponse(jwt));
+	}
+	
+	@PostMapping("/register")
+	public Object register(@RequestBody User user) {
+		logger.info("User : " + user);
+		
+		return userDetailService.registerUser(user);
 	}
 }
