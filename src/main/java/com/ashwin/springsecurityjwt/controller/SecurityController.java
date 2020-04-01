@@ -22,8 +22,7 @@ import com.ashwin.springsecurityjwt.filters.JwtRequestFilter;
 import com.ashwin.springsecurityjwt.request.AuthenticationRequest;
 import com.ashwin.springsecurityjwt.request.User;
 import com.ashwin.springsecurityjwt.response.AuthenticationResponse;
-import com.ashwin.springsecurityjwt.response.ErrorResponse;
-import com.ashwin.springsecurityjwt.response.SuccessResponse;
+import com.ashwin.springsecurityjwt.response.Response;
 import com.ashwin.springsecurityjwt.services.MyUserDetailService;
 import com.ashwin.springsecurityjwt.util.JwtUtil;
 
@@ -35,7 +34,7 @@ public class SecurityController {
 	private static final String AUTHORIZATION = "Authorization";
 	private static final String BADREQUESTS = "Enter JWT Token";
 	private static final String ERRORID = "1000";
-	private static final String STATUS = "200";
+	private static final String SUCCESSID = "200";
 	private static final String ERRORMESSAGE = "Empty JWT token";
 	private static final String SUCCESSMESSAGE = "JWT token validated";
 	
@@ -59,7 +58,7 @@ public class SecurityController {
 		if(reauthenticate == false) {
 		try {
 			logger.info("Into Authenticate API: ");
-		authenticationManager.authenticate(
+			authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
 				);
 		}catch(BadCredentialsException e) {
@@ -73,19 +72,20 @@ public class SecurityController {
 		return ResponseEntity.ok(new AuthenticationResponse(jwt));
 		}else {
 			if(request.getHeader(AUTHORIZATION).isEmpty()) {
-				ErrorResponse error = new ErrorResponse();
-				error.setErrorId(ERRORID);
-				error.setStatus(STATUS);
-				error.setErrorMessage(ERRORMESSAGE);
-				
-				return new ResponseEntity<ErrorResponse> (error, HttpStatus.BAD_REQUEST);
+				logger.info("Empty JWT Token");
+				Response error = new Response();
+				error.setId(ERRORID);
+				error.setMessage(ERRORMESSAGE);
+				error.setJwt(null);
+				return new ResponseEntity<Response> (error, HttpStatus.BAD_REQUEST);
 			} else {
 				String jwt = request.getHeader(AUTHORIZATION).substring(7);
-				SuccessResponse success = new SuccessResponse();
-				success.setSuccessId(STATUS);
-				success.setSuccessMessage(SUCCESSMESSAGE);
+				Response success = new Response();
+				success.setId(SUCCESSID);
+				success.setMessage(SUCCESSMESSAGE);
 				success.setJwt(jwt);
-				return new ResponseEntity<SuccessResponse> (success, HttpStatus.OK);
+				logger.info("Success: JWT Validated");
+				return new ResponseEntity<Response> (success, HttpStatus.OK);
 			}
 		}
 	}
@@ -93,7 +93,6 @@ public class SecurityController {
 	@PostMapping("/register")
 	public Object register(@RequestBody User user) {
 		logger.info("User : " + user);
-		
 		return userDetailService.registerUser(user);
 	}
 }

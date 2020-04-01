@@ -62,6 +62,7 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			}
 		}
+		logger.info("Success: JWT Validation Done");
 		chain.doFilter(request, response);
 	}
 
