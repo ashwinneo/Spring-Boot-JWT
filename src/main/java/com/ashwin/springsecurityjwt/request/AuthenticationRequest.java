@@ -5,7 +5,16 @@ public class AuthenticationRequest {
 	private String username;
 	private String password;
 	private String jwt;
+	private boolean authAgain;
 	
+	public boolean isAuthAgain() {
+		return authAgain;
+	}
+
+	public void setAuthAgain(boolean authAgain) {
+		this.authAgain = authAgain;
+	}
+
 	public AuthenticationRequest() {
 		
 	}
