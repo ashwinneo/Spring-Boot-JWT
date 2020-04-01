@@ -1,4 +1,4 @@
-package com.ashwin.springsecurityjwt.models;
+package com.ashwin.springsecurityjwt.request;
 
 import java.util.Arrays;
 import java.util.Collection;

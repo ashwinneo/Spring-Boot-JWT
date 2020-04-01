@@ -7,17 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
-
-//import org.springframework.security.core.userdetails.User;
-import com.ashwin.springsecurityjwt.models.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.ashwin.springsecurityjwt.controller.HomeController;
-import com.ashwin.springsecurityjwt.models.MyUserDetails;
+import com.ashwin.springsecurityjwt.controller.SecurityController;
 import com.ashwin.springsecurityjwt.repositories.UserRepository;
+import com.ashwin.springsecurityjwt.request.MyUserDetails;
+import com.ashwin.springsecurityjwt.request.User;
 
 @Service
 public class MyUserDetailService implements UserDetailsService{

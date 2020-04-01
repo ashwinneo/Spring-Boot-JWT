@@ -1,4 +1,4 @@
-package com.ashwin.springsecurityjwt.models;
+package com.ashwin.springsecurityjwt.request;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
