@@ -48,5 +48,14 @@ public class User {
 		this.roles = roles;
 	}
 	private String roles;
+	
+	@Override
+    public String toString() {
+        return "Request{" +
+                "userName='" + userName + '\'' +
+                ", password=" + password +
+                ", isActive=" + active +
+                '}';
+    }
 
 }

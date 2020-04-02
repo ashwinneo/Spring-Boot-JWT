@@ -22,6 +22,8 @@ import com.ashwin.springsecurityjwt.response.Response;
 public class MyUserDetailService implements UserDetailsService{
 	
 	Logger logger = LoggerFactory.getLogger(MyUserDetailService.class);
+	private String errorId = "";
+	private String errorMessage = "";
 	
 	@Autowired
 	UserRepository userRespository;
@@ -39,22 +41,56 @@ public class MyUserDetailService implements UserDetailsService{
 	}
 	
 	public Object registerUser(User user) {
-		logger.info("Registering user Start: " + user.getUserName() + user.getPassword());
-		user.setRoles("ROLE_USER");
-		logger.info("Inserting user data to database");
-		User userDetails;
-		try {
-			userDetails = userRespository.save(user);
-			logger.info("Inserting user data done");
-			return userDetails;
-		}catch(Exception e) {
-			logger.info("Error inserting user data " + e);
+		
+		boolean isError = validateInput(user);
+		
+		if(!isError) {
+			logger.info("Registering user Start: " + user.getUserName() + user.getPassword());
+			user.setRoles("ROLE_USER");
+			logger.info("Inserting user data to database");
+			User userDetails;
+			try {
+				userDetails = userRespository.save(user);
+				logger.info("Inserting user data done");
+				return userDetails;
+			}catch(Exception e) {
+				logger.info("Error inserting user data " + e);
+				Response response = new Response();
+				response.setId("1001");
+				response.setMessage("Error inserting user data " + e);
+				return response;
+			}
+		} else {
+			logger.info("Invalid user data");
 			Response response = new Response();
-			response.setId("1001");
-			response.setMessage("Error inserting user data " + e);
+			response.setId(errorId);
+			response.setMessage(errorMessage);
 			return response;
 		}
 		
+		
+	}
+	
+	public boolean validateInput(User user) {
+		boolean isError = false;
+		
+		if(user.getUserName().isEmpty() || user.getUserName().equals("null")) {
+			isError = true;
+			logger.info("Username is empty");
+			errorId = "1001";
+			errorMessage = "Username is empty";
+		} else if(user.getPassword().isEmpty() || user.getPassword().equals("null")) {
+			isError = true;
+			logger.info("Password is empty");
+			errorId = "1001";
+			errorMessage = "Password is empty";
+		} else if(user.isActive() == false) {
+			isError = true;
+			logger.info("User is inactive");
+			errorId = "1001";
+			errorMessage = "User is inactive";
+		}
+		return isError;
 	}
 	
 

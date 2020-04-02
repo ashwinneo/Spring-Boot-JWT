@@ -53,5 +53,15 @@ public class AuthenticationRequest {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	@Override
+    public String toString() {
+        return "Request{" +
+                "userName='" + username + '\'' +
+                ", password=" + password +
+                ", jwt=" + jwt +
+                ", authAgain=" + authAgain +
+                '}';
+    }
 	 
 }
