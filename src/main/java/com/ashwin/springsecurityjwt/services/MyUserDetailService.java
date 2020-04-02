@@ -34,7 +34,7 @@ public class MyUserDetailService implements UserDetailsService{
 //		return new User("foo", "foo", new ArrayList<>());
 		logger.info("Authorizing user from user table");
 		Optional<User> user = userRespository.findByUserName(username);
-		logger.info("User object fetched");
+		logger.info("User object fetched " + user);
 		user.orElseThrow(()-> new UsernameNotFoundException("Username not found" + username));
 		
 		return user.map(MyUserDetails::new).get();
@@ -71,7 +71,7 @@ public class MyUserDetailService implements UserDetailsService{
 		
 	}
 	
-	public boolean validateInput(User user) {
+	private boolean validateInput(User user) {
 		boolean isError = false;
 		
 		if(user.getUserName().isEmpty() || user.getUserName().equals("null")) {

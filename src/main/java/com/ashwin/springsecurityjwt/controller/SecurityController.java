@@ -37,6 +37,7 @@ public class SecurityController {
 	private static final String SUCCESSID = "200";
 	private static final String ERRORMESSAGE = "Empty JWT token";
 	private static final String SUCCESSMESSAGE = "JWT token validated";
+	private static final String WRONGUSERNAME = "Username is different";
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -80,6 +81,15 @@ public class SecurityController {
 				return new ResponseEntity<Response> (error, HttpStatus.BAD_REQUEST);
 			} else {
 				String jwt = request.getHeader(AUTHORIZATION).substring(7);
+				String userName = jwtUtil.extractUsername(jwt);
+				if(!userName.equals(authenticationRequest.getUsername())) {
+					Response error = new Response();
+					error.setId(ERRORID);
+					error.setMessage(WRONGUSERNAME);
+					error.setJwt(jwt);
+					return new ResponseEntity<Response> (error, HttpStatus.BAD_REQUEST);
+				}
+				
 				Response success = new Response();
 				success.setId(SUCCESSID);
 				success.setMessage(SUCCESSMESSAGE);

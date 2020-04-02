@@ -46,25 +46,26 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 		String jwt = null;
 		
 		if(authorizationHeader != null && authorizationHeader.startsWith(BEARER)) {
-			logger.info("Into Authorizing");
+			logger.info("Into Authorizing: Extracting JWT");
 			jwt = authorizationHeader.substring(7);
 			logger.info("JWT TOKEN: " + jwt);
 			username = jwtUtil.extractUsername(jwt);
-			logger.info("Username: " + username);
+			logger.info("JWT Username: " + username);
 		}
-		
+
 		if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = this.userDetailService.loadUserByUsername(username);
+			logger.info("USer details while authorizing " + userDetails);
 			if(jwtUtil.validateToken(jwt, userDetails)) {
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
 				usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+				logger.info("Success: JWT Validation Done");
 			}
-
-			logger.info("Success: JWT Validation Done");
+			chain.doFilter(request, response);
 		}
-		chain.doFilter(request, response);
+		
 	}
 
 }

@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import com.ashwin.springsecurityjwt.filters.JwtRequestFilter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,6 +20,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Service
 public class JwtUtil {
 	
+	Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 	private String SECRET_KEY = "secret";
 	
 	public String extractUsername(String token) {
@@ -54,6 +58,8 @@ public class JwtUtil {
 	
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		final String username = extractUsername(token);
+		logger.info("Validate JWT token username :" + username);
+		logger.info("Validate JWT token userdetails username :" + userDetails.getUsername());
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 	}
 	

@@ -70,5 +70,15 @@ public class MyUserDetails implements UserDetails{
 		// TODO Auto-generated method stub
 		return active;
 	}
+	
+	@Override
+    public String toString() {
+        return "Request{" +
+                "userName='" + userName + '\'' +
+                ", password=" + password +
+                ", isActive=" + active +
+                ", authorities=" + authorities +
+                '}';
+    }
 
 }
