@@ -61,8 +61,9 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 				usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			}
+
+			logger.info("Success: JWT Validation Done");
 		}
-		logger.info("Success: JWT Validation Done");
 		chain.doFilter(request, response);
 	}
 
