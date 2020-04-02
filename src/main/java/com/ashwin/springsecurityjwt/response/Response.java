@@ -24,6 +24,14 @@ public class Response {
 		this.jwt = jwt;
 	}
 	
+	@Override
+    public String toString() {
+        return "Response{" +
+                "id='" + id + '\'' +
+                ", message='" + message + '\'' +
+                ", jwt=" + jwt +
+                '}';
+    }
 	
 	
 }

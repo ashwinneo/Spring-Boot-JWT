@@ -16,6 +16,7 @@ import com.ashwin.springsecurityjwt.controller.SecurityController;
 import com.ashwin.springsecurityjwt.repositories.UserRepository;
 import com.ashwin.springsecurityjwt.request.MyUserDetails;
 import com.ashwin.springsecurityjwt.request.User;
+import com.ashwin.springsecurityjwt.response.Response;
 
 @Service
 public class MyUserDetailService implements UserDetailsService{
@@ -29,18 +30,31 @@ public class MyUserDetailService implements UserDetailsService{
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 //		return new User("foo", "foo", new ArrayList<>());
+		logger.info("Authorizing user from user table");
 		Optional<User> user = userRespository.findByUserName(username);
-		
+		logger.info("User object fetched");
 		user.orElseThrow(()-> new UsernameNotFoundException("Username not found" + username));
 		
 		return user.map(MyUserDetails::new).get();
 	}
 	
 	public Object registerUser(User user) {
-		logger.info("Password: " + user.getPassword());
+		logger.info("Registering user Start: " + user.getUserName() + user.getPassword());
 		user.setRoles("ROLE_USER");
-		User userDetails = userRespository.save(user);
-		return userDetails;
+		logger.info("Inserting user data to database");
+		User userDetails;
+		try {
+			userDetails = userRespository.save(user);
+			logger.info("Inserting user data done");
+			return userDetails;
+		}catch(Exception e) {
+			logger.info("Error inserting user data " + e);
+			Response response = new Response();
+			response.setId("1001");
+			response.setMessage("Error inserting user data " + e);
+			return response;
+		}
+		
 	}
 	
 

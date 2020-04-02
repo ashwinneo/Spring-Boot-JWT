@@ -12,4 +12,11 @@ public class AuthenticationResponse {
 	public String getJwt() {
 		return jwt;
 	}
+	
+	 @Override
+	    public String toString() {
+	        return "AuthenticationResponse{" +
+	                "jwt='" + jwt +
+	                '}';
+	    }
 }
