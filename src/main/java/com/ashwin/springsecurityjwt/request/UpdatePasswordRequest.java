@@ -2,13 +2,26 @@ package com.ashwin.springsecurityjwt.request;
 
 public class UpdatePasswordRequest {
 
-	private String id;
-	private String oldPassword;
-	private String newPassword;
-	public String getId() {
+	public int id;
+	public String oldPassword;
+	public String newPassword;
+	
+	
+	public UpdatePasswordRequest() {
+		
+	}
+	
+	public UpdatePasswordRequest(int id, String oldPassword, String newPassword) {
+		this.id = id;
+		this.oldPassword = oldPassword;
+		this.newPassword = newPassword;
+	}
+	
+	
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	

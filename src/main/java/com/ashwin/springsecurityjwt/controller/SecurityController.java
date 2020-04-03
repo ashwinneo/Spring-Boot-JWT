@@ -100,7 +100,7 @@ public class SecurityController {
 		return userDetailService.registerUser(user);
 	}
 	
-	@PatchMapping("/updatePassword")
+	@PostMapping("/updatePassword")
 	public Object updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
 		logger.info("UpdatePasswordRequest:" + updatePasswordRequest);
 		return userDetailService.updatePassword(updatePasswordRequest);

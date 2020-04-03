@@ -2,9 +2,21 @@ package com.ashwin.springsecurityjwt.response;
 
 public class UpdatePasswordResponse {
 	
-	private String id;
+	private int id;
 	private String responseMessage;
-	public String getId() {
+	
+	
+	public UpdatePasswordResponse() {
+		
+	}
+	
+	
+	public UpdatePasswordResponse(int id, String responseMessage) {
+		super();
+		this.id = id;
+		this.responseMessage = responseMessage;
+	}
+	public int getId() {
 		return id;
 	}
 	public String getResponseMessage() {
@@ -13,7 +25,7 @@ public class UpdatePasswordResponse {
 	public void setResponseMessage(String responseMessage) {
 		this.responseMessage = responseMessage;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String toString() {

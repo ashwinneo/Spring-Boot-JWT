@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.ashwin.springsecurityjwt.controller.SecurityController;
 import com.ashwin.springsecurityjwt.dao.UserDao;
@@ -68,7 +69,7 @@ public class MyUserDetailService implements UserDetailsService{
 				return errorResponse;
 			}
 		} else {
-			logger.info("Invalid user data");
+			logger.info("Validation failed " + errorMessage);
 			ErrorResponse errorResponse = new ErrorResponse();
 			errorResponse.setErrorId(errorId);
 			errorResponse.setErrorMessage(errorMessage);
@@ -80,7 +81,7 @@ public class MyUserDetailService implements UserDetailsService{
 	
 	private boolean validateInput(User user) {
 		boolean isError = false;
-		
+		logger.info("Validating User input for register" +user);
 		if(user.getUserName().isEmpty() || user.getUserName().equals("null")) {
 			isError = true;
 			logger.info("Username is empty");
@@ -102,16 +103,46 @@ public class MyUserDetailService implements UserDetailsService{
 
 	public Object updatePassword(UpdatePasswordRequest updatePasswordRequest) {
 		// TODO Auto-generated method stub
-		
-		try {
-			return userDao.updatePassword(updatePasswordRequest);
-			
-		}catch(Exception e) {
+		logger.info("Update password PUT :" + updatePasswordRequest);
+		boolean isError = validateUpdatePasswordInuput(updatePasswordRequest);
+		if(!isError) {
+			try {
+				return userDao.updatePassword(updatePasswordRequest);
+				
+			}catch(Exception e) {
+				logger.info("Error updating password PUT :" + e);
+				ErrorResponse error = new ErrorResponse();
+				error.setErrorId(MessageConstants.ERRORID);
+				error.setErrorMessage(MessageConstants.UPDATEERROR);
+				return error;
+			}
+		} else {
+			logger.info("Validation failed " + errorMessage);
 			ErrorResponse error = new ErrorResponse();
-			error.setErrorId(MessageConstants.ERRORID);
-			error.setErrorMessage(MessageConstants.UPDATEERROR);
+			error.setErrorId(errorId);
+			error.setErrorMessage(errorMessage);
 			return error;
-		}	
+		}
+	}
+	
+	private boolean validateUpdatePasswordInuput(UpdatePasswordRequest updatePasswordRequest) {
+		boolean isError = false;
+		logger.info("Validating UserpasswordRequest " +updatePasswordRequest);
+		if(ObjectUtils.isEmpty(updatePasswordRequest.getId())) {
+			isError = true;
+			errorId = MessageConstants.EMPTYERRORID;
+			errorMessage = MessageConstants.EMPTYUSERID;
+		} 
+		else if(ObjectUtils.isEmpty(updatePasswordRequest.getOldPassword())) {
+			isError = true;
+			errorId = MessageConstants.EMPTYERRORID;
+			errorMessage = MessageConstants.EMPTYOLDPASSWORD;
+		} else if(ObjectUtils.isEmpty(updatePasswordRequest.getNewPassword())) {
+			isError = true;
+			errorId = MessageConstants.EMPTYERRORID;
+			errorMessage = MessageConstants.EMPTYNEWPASSWORD;
+		}
+		return isError;
 	}
 	
 

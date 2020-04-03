@@ -27,6 +27,11 @@ public class MessageConstants {
 	public static final String UPDATEERROR = "Error updating user password";
 	
 	public static final String UPDATESUCCESS = "HTTP 200 OK Updated Successfully";
+	
+	public static final String EMPTYOLDPASSWORD = "Old password is empty";
+	
+	public static final String EMPTYUSERID = "User ID is empty";
 			
+	public static final String EMPTYNEWPASSWORD = "New password is empty";
 	
 }
