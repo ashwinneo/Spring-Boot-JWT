@@ -27,7 +27,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
 		// TODO Auto-generated method stub
 		 web
 	      .ignoring()
-	        .antMatchers("/register");
+	        .antMatchers("/register").antMatchers("/updatePassword");
 	}
 
 	@Autowired

@@ -11,33 +11,27 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ashwin.springsecurityjwt.filters.JwtRequestFilter;
 import com.ashwin.springsecurityjwt.request.AuthenticationRequest;
+import com.ashwin.springsecurityjwt.request.UpdatePasswordRequest;
 import com.ashwin.springsecurityjwt.request.User;
 import com.ashwin.springsecurityjwt.response.AuthenticationResponse;
+import com.ashwin.springsecurityjwt.response.ErrorResponse;
 import com.ashwin.springsecurityjwt.response.Response;
 import com.ashwin.springsecurityjwt.services.MyUserDetailService;
 import com.ashwin.springsecurityjwt.util.JwtUtil;
-
+import com.ashwin.springsecurityjwt.util.MessageConstants;
 @RestController
 public class SecurityController {
 
 	Logger logger = LoggerFactory.getLogger(SecurityController.class);
-	
-	private static final String AUTHORIZATION = "Authorization";
-	private static final String BADREQUESTS = "Enter JWT Token";
-	private static final String ERRORID = "1000";
-	private static final String SUCCESSID = "200";
-	private static final String ERRORMESSAGE = "Empty JWT token";
-	private static final String SUCCESSMESSAGE = "JWT token validated";
-	private static final String WRONGUSERNAME = "Username is different";
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -72,27 +66,27 @@ public class SecurityController {
 		
 		return ResponseEntity.ok(new AuthenticationResponse(jwt));
 		}else {
-			if(request.getHeader(AUTHORIZATION).isEmpty()) {
+			if(request.getHeader(MessageConstants.AUTHORIZATION).isEmpty()) {
 				logger.info("Empty JWT Token");
-				Response error = new Response();
-				error.setId(ERRORID);
-				error.setMessage(ERRORMESSAGE);
-				error.setJwt(null);
-				return new ResponseEntity<Response> (error, HttpStatus.BAD_REQUEST);
+				ErrorResponse error = new ErrorResponse();
+				error.setErrorId(MessageConstants.ERRORID);
+				error.setErrorMessage(MessageConstants.EMPTYJWTTOKEN);
+				return new ResponseEntity<ErrorResponse> (error, HttpStatus.BAD_REQUEST);
 			} else {
-				String jwt = request.getHeader(AUTHORIZATION).substring(7);
+				logger.info("JWT Token Validating");
+				String jwt = request.getHeader(MessageConstants.AUTHORIZATION).substring(7);
 				String userName = jwtUtil.extractUsername(jwt);
 				if(!userName.equals(authenticationRequest.getUsername())) {
-					Response error = new Response();
-					error.setId(ERRORID);
-					error.setMessage(WRONGUSERNAME);
-					error.setJwt(jwt);
-					return new ResponseEntity<Response> (error, HttpStatus.BAD_REQUEST);
+					logger.info("JWT Token not mapped to the user");
+					ErrorResponse error = new ErrorResponse();
+					error.setErrorId(MessageConstants.ERRORID);
+					error.setErrorMessage(MessageConstants.WRONGUSERNAME);
+					return new ResponseEntity<ErrorResponse> (error, HttpStatus.BAD_REQUEST);
 				}
 				
 				Response success = new Response();
-				success.setId(SUCCESSID);
-				success.setMessage(SUCCESSMESSAGE);
+				success.setId(MessageConstants.SUCCESSID);
+				success.setMessage(MessageConstants.JWTTOKENVALIDATED);
 				success.setJwt(jwt);
 				logger.info("Success: JWT Validated");
 				return new ResponseEntity<Response> (success, HttpStatus.OK);
@@ -104,5 +98,11 @@ public class SecurityController {
 	public Object register(@RequestBody User user) {
 		logger.info("User : " + user);
 		return userDetailService.registerUser(user);
+	}
+	
+	@PatchMapping("/updatePassword")
+	public Object updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
+		logger.info("UpdatePasswordRequest:" + updatePasswordRequest);
+		return userDetailService.updatePassword(updatePasswordRequest);
 	}
 }
