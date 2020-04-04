@@ -34,4 +34,12 @@ public class MessageConstants {
 			
 	public static final String EMPTYNEWPASSWORD = "New password is empty";
 	
+	public static final String EMPTYACTIVESTATUS = "Active status is empty";
+
+	public static final String DEACTIVATEACCOUNT = "HTTP 200 OK Deactivated Account";
+	
+	public static final String DEACTIVATEACCOUNTFAIL = "Error deactivating account";
+	
+	public static final String PASSWORDNOTSAME = "User password different";
+	
 }

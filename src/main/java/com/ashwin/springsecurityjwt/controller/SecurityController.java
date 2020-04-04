@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ashwin.springsecurityjwt.request.AuthenticationRequest;
+import com.ashwin.springsecurityjwt.request.DeactivateAccountRequest;
 import com.ashwin.springsecurityjwt.request.UpdatePasswordRequest;
 import com.ashwin.springsecurityjwt.request.User;
 import com.ashwin.springsecurityjwt.response.AuthenticationResponse;
@@ -104,5 +105,11 @@ public class SecurityController {
 	public Object updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
 		logger.info("UpdatePasswordRequest:" + updatePasswordRequest);
 		return userDetailService.updatePassword(updatePasswordRequest);
+	}
+	
+	@PostMapping("/deactivateAccount")
+	public Object deactivateAccount(@RequestBody DeactivateAccountRequest deactivateAccountRequest) {
+		logger.info("Deactivate Account: " + deactivateAccountRequest);
+		return userDetailService.deactivateAccount(deactivateAccountRequest);
 	}
 }

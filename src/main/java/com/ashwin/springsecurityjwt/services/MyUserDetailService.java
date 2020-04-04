@@ -16,9 +16,11 @@ import org.springframework.util.ObjectUtils;
 import com.ashwin.springsecurityjwt.controller.SecurityController;
 import com.ashwin.springsecurityjwt.dao.UserDao;
 import com.ashwin.springsecurityjwt.repositories.UserRepository;
+import com.ashwin.springsecurityjwt.request.DeactivateAccountRequest;
 import com.ashwin.springsecurityjwt.request.MyUserDetails;
 import com.ashwin.springsecurityjwt.request.UpdatePasswordRequest;
 import com.ashwin.springsecurityjwt.request.User;
+import com.ashwin.springsecurityjwt.response.DeactivateAccountResponse;
 import com.ashwin.springsecurityjwt.response.ErrorResponse;
 import com.ashwin.springsecurityjwt.response.Response;
 import com.ashwin.springsecurityjwt.response.UpdatePasswordResponse;
@@ -117,7 +119,7 @@ public class MyUserDetailService implements UserDetailsService{
 				return error;
 			}
 		} else {
-			logger.info("Validation failed " + errorMessage);
+			logger.info("Update password validation failed " + errorMessage);
 			ErrorResponse error = new ErrorResponse();
 			error.setErrorId(errorId);
 			error.setErrorMessage(errorMessage);
@@ -142,6 +144,60 @@ public class MyUserDetailService implements UserDetailsService{
 			errorId = MessageConstants.EMPTYERRORID;
 			errorMessage = MessageConstants.EMPTYNEWPASSWORD;
 		}
+		return isError;
+	}
+
+	public Object deactivateAccount(DeactivateAccountRequest deactivateAccountRequest) {
+		// TODO Auto-generated method stub
+		logger.info("Deactivate Account PUT: " + deactivateAccountRequest);
+		boolean isError = validateDeactivateAccountPassword(deactivateAccountRequest);
+		Object response = null;
+		if(!isError) {
+			try {
+				String password = userDao.getPasswordById(deactivateAccountRequest.getId());
+				logger.info("Deactivate Account password: " + password);
+				if(password != null && password.equals(deactivateAccountRequest.getPassword())) {
+					return response = userDao.deactivateAccount(deactivateAccountRequest);
+				} else {
+					logger.info("Deactivate Account: Password not same");
+					ErrorResponse error = new ErrorResponse();
+					error.setErrorId(MessageConstants.ERRORID);
+					error.setErrorMessage(MessageConstants.PASSWORDNOTSAME);
+					return error;
+				}
+			}catch(Exception e) {
+				logger.info("Deactivate Account Exception : " + e);
+				ErrorResponse error = new ErrorResponse();
+				error.setErrorId(MessageConstants.ERRORID);
+				error.setErrorMessage(MessageConstants.DEACTIVATEACCOUNTFAIL + e);
+				return error;
+			}
+		} else {
+			logger.info("Deactivate account validation failed");
+			ErrorResponse error = new ErrorResponse();
+			error.setErrorId(errorId);
+			error.setErrorMessage(errorMessage);
+			return error;
+		}
+	}
+	
+	private boolean validateDeactivateAccountPassword(DeactivateAccountRequest deactivateAccountRequest) {
+		boolean isError = false;
+		
+		if(ObjectUtils.isEmpty(deactivateAccountRequest.getId())) {
+			isError = true;
+			errorId = MessageConstants.EMPTYERRORID;
+			errorMessage = MessageConstants.EMPTYUSERID;
+		} else if(ObjectUtils.isEmpty(deactivateAccountRequest.getPassword())) {
+			isError = true;
+			errorId = MessageConstants.EMPTYERRORID;
+			errorMessage = MessageConstants.EMPTYPASSWORD;
+		} else if(ObjectUtils.isEmpty(deactivateAccountRequest.isActive())) {
+			isError = true;
+			errorId = MessageConstants.EMPTYERRORID;
+			errorMessage = MessageConstants.EMPTYACTIVESTATUS;
+		}
+		
 		return isError;
 	}
 	
